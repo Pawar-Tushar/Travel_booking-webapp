@@ -1,12 +1,10 @@
 from pathlib import Path
-
+import sys
+from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = 'django-insecure-t(pu#&8_lf-&sydowvfdbmj57w9$y@^l&lxik8w&^j)$2a&^t_'
-
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+SECRET_KEY = config("SECRET_KEY")
+DEBUG = config("DEBUG", default=False, cast=bool)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*").split(",")
 
 
 INSTALLED_APPS = [
@@ -50,19 +48,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'travel_booking.wsgi.application'
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fipeyol$default',
-        'USER': 'fipeyol',
-        'PASSWORD': 'tushar@123',
-        'HOST': 'fipeyol.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
     }
-}
-
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config("DB_NAME"),
+            'USER': config("DB_USER"),
+            'PASSWORD': config("DB_PASSWORD"),
+            'HOST': config("DB_HOST"),
+            'PORT': config("DB_PORT"),
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
