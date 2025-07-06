@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6"> 
+        <div class="card shadow">
+
+            <div class="card-header">
+                <h3 class="card-title text-center mb-0">Book Travel</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title mb-3">{{ option.travel_type }} from {{ option.source }} to {{ option.destination }}</h4>
+                <p class="card-text mb-1"><strong>Date:</strong> {{ option.datetime }}</p>
+                <p class="card-text mb-1"><strong>Price per seat:</strong> ${{ option.price }}</p>
+                <p class="card-text mb-4"><strong>Available Seats:</strong> {{ option.available_seats }}</p>
+
+                <hr class="mb-4"> 
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }} 
+                             {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text text-muted">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
